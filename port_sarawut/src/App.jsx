@@ -1,72 +1,106 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MyNavbar from './components/nav';
-import { motion } from 'framer-motion';
+import Footer from './components/footer';
+import Profile from './components/Profile';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Typewriter } from 'react-simple-typewriter';
 
-const Hero = () => {
+const App = () => {
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    const loadImage = (src) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+    };
+
+    Promise.all([
+      loadImage("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ec63dde4-0dc8-47a8-87fe-9c424adb3cf3/dfsdhj7-49813945-b6fb-474f-b88e-2b059533409c.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2VjNjNkZGU0LTBkYzgtNDdhOC04N2ZlLTljNDI0YWRiM2NmM1wvZGZzZGhqNy00OTgxMzk0NS1iNmZiLTQ3NGYtYjg4ZS0yYjA1OTUzMzQwOWMuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.EKj12hMJ6b6SLYoQkU25mdYFG4IKb-U7xiqZVS1N3V8"),
+      loadImage("https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp")
+    ]).then(() => {
+      setImagesLoaded(true);
+      setTimeout(() => setShowContent(true), 100);
+    });
+  }, []);
+
+  const yourname = "Sarawut";
+
+  function dataname(name) {
+    return "Welcome " + name + " To My Portfolio";
+  }
+
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <>
-      <MyNavbar />
-      <motion.div
-        className="hero min-h-screen bg-cover"
-        style={{ backgroundImage: "url(https://scontent.xx.fbcdn.net/v/t1.15752-9/453445040_852528243090249_6736572468152724914_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeEis8xSSZ6Gf5N0snrpSdaA0UwKELNvl7nRTAoQs2-XuZEAXHwl1_QjO1hdQSyyytz6ZLPoG4MoXG_OgCtmS0VF&_nc_ohc=jRZvnx53ftQQ7kNvgEw2JXM&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_Q7cD1QHVvIwThcvNMSyTx3jrTX7FEArlaHey6XzeT67mrpXkDg&oe=66F1509F)" }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 2, ease: 'easeInOut' }} // Customize animation duration and easing
-      >
-        <div className="hero-overlay bg-opacity-60"></div>
+    <AnimatePresence>
+      {imagesLoaded && (
         <motion.div
-          className="hero-content text-neutral-content text-center"
-          initial={{ y: 100, opacity: 0 }} // Start off-screen and invisible
-          animate={{ y: 0, opacity: 1 }} // Animate to center and become visible
-          transition={{ duration: 2, delay: 0.5, ease: 'easeInOut' }} // Customize animation duration, delay, and easing
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="max-w-md">
-            <h1 className="mb-5 text-5xl font-bold">
-              <Typewriter
-                words={['Welcome Darling', 'I LOVE YOU', 'Very Much']}
-                loop
-                cursor
-                typeSpeed={100}
-                deleteSpeed={50}
-                delaySpeed={1000}
-              />
-            </h1>
-          </div>
-        </motion.div>
-      </motion.div>
 
-      <motion.div
-        className="hero bg-base-200 min-h-screen"
-        whileInView={{
-          opacity: [0, 1], // Animate opacity from 0 to 1 on scroll
-          scale: [0.5, 1], // Zoom in on scroll (adjust values for desired effect)
-          y: [100, 0], // Move the element 100px down initially, then up
-          transition: { duration: 1 }, // Set animation duration to 1 second
-        }}
-        initial={{ opacity: 0, scale: 1, y: 100 }}
-        exit={{ opacity: 0, scale: 0.5, y: 100 }} // Define exit animation on scroll up
-      >
-        <motion.div className="hero-content flex-col lg:flex-row">
-          <img
-            src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
-            className="max-w-sm rounded-lg shadow-2xl"
-            alt="Box Office News" // Add descriptive alt text for accessibility
-          />
-          <div>
-            <h1 className="text-5xl font-bold">Box Office News!</h1>
-            <p className="py-6">
-              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-              quasi.
-              In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button className="btn btn-primary">Get Started</button>
+          <MyNavbar scrollToSection={scrollToSection} />
+
+          {/*Welcome*/}
+          <div id="welcome-section">
+            <motion.div
+              className="hero min-h-screen bg-cover"
+              style={{ backgroundImage: "url(https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ec63dde4-0dc8-47a8-87fe-9c424adb3cf3/dfsdhj7-49813945-b6fb-474f-b88e-2b059533409c.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2VjNjNkZGU0LTBkYzgtNDdhOC04N2ZlLTljNDI0YWRiM2NmM1wvZGZzZGhqNy00OTgxMzk0NS1iNmZiLTQ3NGYtYjg4ZS0yYjA1OTUzMzQwOWMuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.EKj12hMJ6b6SLYoQkU25mdYFG4IKb-U7xiqZVS1N3V8)" }}
+            >
+              <div className="hero-overlay bg-opacity-60"></div>
+              <AnimatePresence>
+                {showContent && (
+                  <motion.div
+                    className="hero-content text-neutral-content text-center"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -20, opacity: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
+
+                    <div className="max-w-md">
+                      <h1 className="mb-5 text-5xl font-bold text-[#ffffff]">
+                        <Typewriter
+                          words={[dataname(yourname)]}
+                          loop
+                          cursor
+                          typeSpeed={70}
+                          deleteSpeed={50}
+                          delaySpeed={1000}
+                        />
+                      </h1>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </div>
+
+          <div id='Profile-section'>
+            <Profile />
+            <Profile />
+            <Profile />
+          </div>
+
+          <Footer />
+
         </motion.div>
 
-      </motion.div>
-    </>
+      )}
+    </AnimatePresence>
   );
 };
 
-export default Hero;
+export default App;
